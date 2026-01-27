@@ -1,16 +1,14 @@
-# first_app
+# 📦 Inventory App
 
-A new Flutter project.
+A professional inventory management application built with **Flutter** and **Provider**.
 
-## Getting Started
+## ✨ Features
+* **SQL-Inspired Logic:** Data management using Dart's `fold` and `UnmodifiableListView` for integrity.
+* **Responsive UI:** Keyboard-aware input fields using `SingleChildScrollView`.
+* **Modern UX:** Swipe-to-delete functionality with `Dismissible` widgets.
+* **State Management:** Global state handled via the `Provider` pattern.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Technical Stack
+* **Language:** Dart
+* **Framework:** Flutter
+* **Architecture:** Provider (ChangeNotifier)

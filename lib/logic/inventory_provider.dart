@@ -18,6 +18,13 @@ class InventoryProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void removeItem(String id) {
+//Target the private list directly
+    _items.removeWhere((item) => item.id == id);
+// Broadcast the change to the UI
+    notifyListeners();
+  }
+
 ///Calculates the total value
   double get totalInventoryValue{
     return _items.fold(0, (sum, item) => sum + item.totalValue);

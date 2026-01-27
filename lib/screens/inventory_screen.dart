@@ -13,7 +13,7 @@ class InventoryScreen extends StatelessWidget{
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Inventory App'), 
+      title: const Text('Essentials Vault'), 
       centerTitle: true,
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
@@ -44,12 +44,39 @@ class InventoryScreen extends StatelessWidget{
               itemCount: inventory.items.length,
               itemBuilder: (context, index){
                 final item = inventory.items[index];
-              return ListTile(
-                leading: CircleAvatar(child: Text(item.name[0])),
-                title: Text(item.name),
-                subtitle: Text('Qty: ${item.quantity}'),
-                trailing: Text('#${item.price.toStringAsFixed(2)}')
-              );
+              return Dismissible(
+  //Essential for Flutter to track which item is being swiped
+  key: Key(item.id),
+
+  //The Background: What appears behind the row during the swipe
+  direction: DismissDirection.endToStart, // Swipe right-to-left
+  background: Container(
+    color: Colors.redAccent,
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: const Icon(Icons.delete, color: Colors.white),
+  ),
+
+  //The Action: What happens when the swipe completes
+  onDismissed: (direction) {
+    // Call the "Brain" to remove it from the data
+    context.read<InventoryProvider>().removeItem(item.id);
+
+    //Provide instant feedback to the user
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${item.name} removed"),
+        backgroundColor: Colors.black87,
+      ),
+    );
+  },
+  //ListTile
+  child: ListTile(
+    title: Text(item.name),
+    subtitle: Text('Qty: ${item.quantity}'),
+    trailing: Text('\$${(item.price * item.quantity).toStringAsFixed(2)}'),
+  ),
+);
               }
             )
           ),
@@ -75,8 +102,7 @@ void _showAddItemDialog(BuildContext context){
     builder: (context) => AlertDialog(
       title: const Text('Add New Item'),
       content: SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+        child: Column(mainAxisSize: MainAxisSize.min,
         children: [
           TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Item name')),
           TextField(controller: qtyController, decoration: const InputDecoration(labelText: 'Quantity'), keyboardType:TextInputType.number),
@@ -84,6 +110,7 @@ void _showAddItemDialog(BuildContext context){
         ]
       ),
       ),
+
 
      actions: [
       TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel'),),

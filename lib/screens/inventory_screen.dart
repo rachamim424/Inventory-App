@@ -64,7 +64,7 @@ class InventoryScreen extends StatelessWidget{
 
     //Provide instant feedback to the user
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      SnackBar( 
         content: Text("${item.name} removed"),
         backgroundColor: Colors.black87,
       ),
@@ -74,7 +74,7 @@ class InventoryScreen extends StatelessWidget{
   child: ListTile(
     title: Text(item.name),
     subtitle: Text('Qty: ${item.quantity}'),
-    trailing: Text('\$${(item.price * item.quantity).toStringAsFixed(2)}'),
+    trailing: Text('#${(item.price * item.quantity).toStringAsFixed(2)}'),
   ),
 );
               }

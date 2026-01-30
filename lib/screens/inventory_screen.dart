@@ -13,7 +13,7 @@ class InventoryScreen extends StatelessWidget{
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Essentials Vault'), 
+      title: const Text('Inventory App'), 
       centerTitle: true,
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
@@ -65,8 +65,17 @@ class InventoryScreen extends StatelessWidget{
     //Provide instant feedback to the user
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar( 
-        content: Text("${item.name} removed"),
-        backgroundColor: Colors.black87,
+
+        content: Center(
+          heightFactor: 1, //Keeps the snackbar from becoming to tall
+          child: Text("${item.name} removed",
+          textAlign: TextAlign.center
+          ),
+        ),
+         backgroundColor: Colors.black87,
+         behavior: SnackBarBehavior.floating,//Makes it float above the bottom
+         margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 10), //Makes it smaller
+         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)) //Rounded corners
       ),
     );
   },

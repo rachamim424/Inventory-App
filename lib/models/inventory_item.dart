@@ -15,4 +15,24 @@ InventoryItems({
 
 ///Calculates the total value of this stock item
 double get totalValue => quantity * price;
+
+//Convert InventoryItems into Map (to be in JSON)
+  Map<String, dynamic> toMap(){
+    return{
+      'id': id,
+      'name': name,
+      'quantity': quantity,
+      'price': price,
+    };
+  }
+
+//Creates an InventoryItem from a map when loading from storage
+  factory InventoryItems.fromMap(Map<String, dynamic> map){
+  return InventoryItems(
+    id: map['id'],
+    name: map['name'],
+    quantity: map['quantity'],
+    price: map['price'],
+  );
+  }
 }

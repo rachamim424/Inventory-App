@@ -5,10 +5,15 @@ import "package:provider/provider.dart";
 import "../screens/inventory_screen.dart";
 import "../logic/inventory_provider.dart";
 
-void main(){
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); //Required for plugin
+
+  final inventoryProvider = InventoryProvider();
+  await inventoryProvider.loadData();
+
   runApp(
     ChangeNotifierProvider(
-      create: (context) => InventoryProvider(),
+      create: (context) => inventoryProvider,
       child: const EssentialsVaultApp(),
     ),
   );

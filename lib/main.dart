@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 //This connects main files to the folders
-import "../screens/inventory_screen.dart";
 import "../logic/inventory_provider.dart";
+import "../screens/main_wrapper.dart";
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); //Required for plugin
@@ -31,7 +31,7 @@ class EssentialsVaultApp extends StatelessWidget{
       brightness: Brightness.light,),
       useMaterial3: true,
       ),
-      home: const InventoryScreen(),
+      home: const MainWrapper(),
     );
   }
 }

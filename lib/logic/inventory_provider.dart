@@ -53,5 +53,18 @@ class InventoryProvider extends ChangeNotifier{
   double get totalInventoryValue{
     return _items.fold(0, (sum, item) => sum + item.totalValue);
   }
+
+//Counts the items in inventory
+  int get totalItemCount{
+  return _items.fold(0, (sum, item) => sum + item.quantity);
 }
+
+//Compares prices and returns highest price
+InventoryItems? get mostExpensiveItem{
+  if(_items.isEmpty) return null;
+  return _items.reduce((current, next) => current.price > next.price? current : next);
+}
+}
+
+
 

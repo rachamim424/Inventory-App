@@ -3,20 +3,84 @@ import "package:provider/provider.dart";
 import "../models/inventory_item.dart";
 import "../logic/inventory_provider.dart";
 
-class InventoryScreen extends StatelessWidget{
+class InventoryScreen extends StatefulWidget{
  const InventoryScreen({super.key});
 
   @override
+  State<InventoryScreen> createState() => _InventoryScreenState();
+}
+
+class _InventoryScreenState extends State<InventoryScreen>{
+
+//Search state variables
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+@override
  Widget build(BuildContext context){
 ///Listens to the provider here. When the list changes, the builder runs again
   final inventory = context.watch<InventoryProvider>();
+
+//Filter logic
+  final filteredItems = inventory.items.where((item){
+    return item.name.toLowerCase().contains(_searchQuery.toLowerCase());
+  }).toList();
 
   return Scaffold(
     appBar: AppBar(
       title: const Text('Inventory App'), 
       centerTitle: true,
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 20), //Space below the bar
+
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5, //Limit width to 85% of screen
+            height: 45, 
+            
+            child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0,2),
+                ),
+              ],
+            ),//Sets slimmer height
+          
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: const Icon(Icons.search, size: 20, color: Colors.grey),
+                border: InputBorder.none,
+                isDense: true, //Removes the extra padding inside
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                suffixIcon: _searchQuery.isNotEmpty?
+                IconButton(
+                  icon: const Icon(Icons.clear, size: 20),
+                  onPressed: (){
+                    _searchController.clear();
+                    setState(() => _searchQuery = '');
+                  },
+              ): null,
+            ),
+            onChanged: (value){
+              setState((){_searchQuery = value;
+              });
+            },
+          ),
+        ),
+       ),
       ),
+      ),
+    ),
       body: Column(
         children: [
 
@@ -38,12 +102,17 @@ class InventoryScreen extends StatelessWidget{
           ),
 
           Expanded(
-            child: inventory.items.isEmpty? 
-            const Center(child: Text('No items in vault yet.'))
+            child: filteredItems.isEmpty? 
+            Center(
+              child: Text(
+                _searchQuery.isEmpty?
+                'No items in Vault yet':
+                'No result for $_searchQuery'),
+                )
             : ListView.builder(
-              itemCount: inventory.items.length,
+              itemCount: filteredItems.length,
               itemBuilder: (context, index){
-                final item = inventory.items[index];
+                final item = filteredItems[index];
               return Dismissible(
   //Essential for Flutter to track which item is being swiped
   key: Key(item.id),

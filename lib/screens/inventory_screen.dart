@@ -128,19 +128,29 @@ class _InventoryScreenState extends State<InventoryScreen>{
 
   //The Action: What happens when the swipe completes
   onDismissed: (direction) {
-    // Call the "Brain" to remove it from the data
-    context.read<InventoryProvider>().removeItem(item.id);
+//Keep a copy of item before it's gone
+    final deletedItem = item;
+    final provider = context.read<InventoryProvider>();
+    // Remove it from the brain
+    provider.removeItem(item.id);
 
+//Show snakbar with an undo botton
+     ScaffoldMessenger.of(context).clearSnackBars(); //Clears old bars immediately
     //Provide instant feedback to the user
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar( 
-
-        content: Center(
-          heightFactor: 1, //Keeps the snackbar from becoming to tall
-          child: Text("${item.name} removed",
-          textAlign: TextAlign.center
+        content: 
+          Text("${deletedItem.name} removed",
           ),
-        ),
+         action: SnackBarAction(
+          label: 'UNDO',
+          textColor: Colors.yellow,
+          onPressed: (){
+//Put it back if UNDO is tapped
+            provider.addItem(deletedItem);
+          }
+          ),
+         duration: const Duration(milliseconds:800), //Gives 0.8 secs to decide
          backgroundColor: Colors.black87,
          behavior: SnackBarBehavior.floating,//Makes it float above the bottom
          margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 10), //Makes it smaller
@@ -153,6 +163,11 @@ class _InventoryScreenState extends State<InventoryScreen>{
     title: Text(item.name),
     subtitle: Text('Qty: ${item.quantity}'),
     trailing: Text('#${(item.price * item.quantity).toStringAsFixed(2)}'),
+
+  //Makes the row clickable
+  onTap: () {
+    _showAddItemDialog(context, itemToEdit: item);
+  }
   ),
 );
               }
@@ -169,16 +184,16 @@ class _InventoryScreenState extends State<InventoryScreen>{
 }
 
 ///Defining a function to collect input from user
-void _showAddItemDialog(BuildContext context){
-  final nameController = TextEditingController();
-  final qtyController = TextEditingController();
-  final priceController = TextEditingController();
+void _showAddItemDialog(BuildContext context, {InventoryItems? itemToEdit}) {
+  final nameController = TextEditingController(text: itemToEdit?.name?? '');
+  final qtyController = TextEditingController(text: itemToEdit?.quantity.toString()?? '');
+  final priceController = TextEditingController(text: itemToEdit?.price.toString()?? '');
 
 //Pop up for add item
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Add New Item'),
+      title: Text(itemToEdit == null? 'Add New Item' : 'Edit ${itemToEdit.name}'),
       content: SingleChildScrollView(
         child: Column(mainAxisSize: MainAxisSize.min,
         children: [
@@ -196,17 +211,21 @@ void _showAddItemDialog(BuildContext context){
 
 //Create the new item model
         final newItem = InventoryItems(
-          id: DateTime.now().toString(),
+//If editing keep same id, if new, create one
+          id: itemToEdit?.id?? DateTime.now().toString(),
           name: nameController.text,
           quantity: int.tryParse(qtyController.text) ?? 0,
           price: double.tryParse(priceController.text) ?? 0.0,
         );
 
-//Send to brain
-        context.read<InventoryProvider>().addItem(newItem);
+        if (itemToEdit == null){
+          context.read<InventoryProvider>().addItem(newItem);
+        } else{
+          context.read<InventoryProvider>().updateItem(newItem);
+        }
         Navigator.pop(context);
       },
-      child: const Text('Add to Vault'),
+      child: Text(itemToEdit == null? 'Add to Vault' : 'Update Item'),
       ),
      ], 
     ),

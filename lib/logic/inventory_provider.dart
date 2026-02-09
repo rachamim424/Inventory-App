@@ -64,6 +64,17 @@ InventoryItems? get mostExpensiveItem{
   if(_items.isEmpty) return null;
   return _items.reduce((current, next) => current.price > next.price? current : next);
 }
+
+//Updating List
+void updateItem(InventoryItems updatedItem){
+  final index = _items.indexWhere((item) => item.id == updatedItem.id);
+
+  if (index != -1) {
+    _items[index] = updatedItem; //Swap old for new
+    notifyListeners(); //Refresh the UI and Stats
+    _saveToDisk(); //Saves permanently
+  }
+}
 }
 
 

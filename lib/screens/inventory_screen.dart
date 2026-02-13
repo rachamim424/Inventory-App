@@ -134,7 +134,7 @@ class _InventoryScreenState extends State<InventoryScreen>{
     // Remove it from the brain
     provider.removeItem(item.id);
 
-//Show snakbar with an undo botton
+//Show snackbar with an undo botton
      ScaffoldMessenger.of(context).clearSnackBars(); //Clears old bars immediately
     //Provide instant feedback to the user
     ScaffoldMessenger.of(context).showSnackBar(
@@ -150,7 +150,6 @@ class _InventoryScreenState extends State<InventoryScreen>{
             provider.addItem(deletedItem);
           }
           ),
-         duration: const Duration(milliseconds:800), //Gives 0.8 secs to decide
          backgroundColor: Colors.black87,
          behavior: SnackBarBehavior.floating,//Makes it float above the bottom
          margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 10), //Makes it smaller

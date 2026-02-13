@@ -28,8 +28,11 @@ jobs:
       - name: Build APK
         run: flutter build apk --debug
 
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/inventory-app.apk
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: my-vault-app
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: Inventory-App-Build
+          path: build/app/outputs/flutter-apk/inventory-app.apk
